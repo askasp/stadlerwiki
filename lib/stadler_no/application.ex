@@ -15,7 +15,9 @@ defmodule StadlerNo.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: StadlerNo.PubSub},
       # Start the Endpoint (http/https)
-      StadlerNoWeb.Endpoint
+      StadlerNoWeb.Endpoint,
+
+      StadlerNo.Presence # <= Add This!
       # Start a worker by calling: StadlerNo.Worker.start_link(arg)
       # {StadlerNo.Worker, arg}
     ]

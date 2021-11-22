@@ -5,7 +5,6 @@ defmodule StadlerNoWeb.PageLive do
   def render(assigns) do
     ~H"""
 
-
 <div class="drawer drawer-top h-screen overflow-x-hidden ">
 
 <div class="shadow bg-base-200 drawer drawer-mobile w-screen overflow-x-hidden ">
@@ -56,7 +55,7 @@ defmodule StadlerNoWeb.PageLive do
 
 <%= case @tab do %>
 	<%= "chart" -> %> <div id="cy"  class="w-full h-[70vh]"  phx-hook="NodeChart">  </div>
-	<%= _ ->%> <%= chat(%{messages: @messages}) %>
+	<%= _ ->%> <%= chat(%{messages: @messages, reader_count: @reader_count}) %>
 	<% end %>
 
     </div>
@@ -88,14 +87,53 @@ defmodule StadlerNoWeb.PageLive do
   def mount(_params, %{}, socket) do
     # query = from p in StadlerNo.Wiki.Post,
     post = StadlerNo.Wiki.get_post!(1)
+    topic = "everyone"
+		StadlerNoWeb.Endpoint.subscribe(topic)
+    StadlerNo.Presence.track(
+      self(),
+      topic,
+      socket.id,
+      %{}
+    )
+
+    count = StadlerNo.Presence.list(topic)
+    |> Map.keys
+    |> length
+
     socket = generate_nodes(socket)
-    {:ok, assign(socket, post: post, checked: false, tab: "chat", messages: [%{author: "aksel", message: "hei"}, %{author: "tore", message: "samma"}])}
+    {:ok, assign(socket, post: post, checked: false, tab: "chat", messages: [], reader_count: count)}
+  end
+
+  def handle_info(
+        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
+        %{assigns: %{reader_count: count}} = socket
+      ) do
+    reader_count = count + map_size(joins) - map_size(leaves)
+
+    {:noreply, assign(socket, :reader_count, reader_count)}
   end
 
   def handle_event("toggledrawer", _a, socket) do
+
     {:noreply, assign(socket, checked: !socket.assigns.checked)}
 
   end
+
+  def handle_info(%{"message" => _m, "author" => _a} = msg, socket) do
+    IO.inspect "got message"
+    IO.inspect msg
+    messages = socket.assigns.messages ++ [msg]
+
+    sock = push_event(socket, "new_message", %{})
+
+    {:noreply, assign(sock, messages: messages)}
+    end
+
+  def handle_event("send_message", message, socket) do
+    Phoenix.PubSub.broadcast(StadlerNo.PubSub, "everyone", %{"message" => message, "author" => socket.id})
+    {:noreply, socket}
+  end
+
 
   defp generate_nodes(socket) do
     nodes = StadlerNo.Repo.all(StadlerNo.Wiki.Post)
@@ -116,18 +154,18 @@ defmodule StadlerNoWeb.PageLive do
 
   def chat(assigns) do
     ~H"""
-    <div class="h-screen">
-  		<div id="chatPage" phx-hook="SendMsg"> </div>
+    <h2> People on page : <%= @reader_count %> </h2>
+  <div id="chatPage" phx-hook="SendMsg" class="h-[35vh] md:h-[60vh] py-5 overflow-y-auto">
 			<div class="container mx-auto " phx-hook="Scroll" id="messages">
-      	<div class="mt-8 mb-16 ">
+      	<div class="mt-2 mb-4 ">
       		<%= for m <- @messages do %>
-    				<b class=""> <%= m.author %> </b>
-    				<div class="p-0 m-0"> <%= m.message %> </div>
+    				<div class="p-0 m-0"> <%= m["message"]%> </div>
     				<div class="divider"></div>
    				<% end %>
   			</div>
-
-    	<div class="form-control mt-5 ">
+  		</div>
+  	</div>
+    	<div class="form-control mt-5">
     		<form phx-submit="send_message" autocomplete="off">
     			<div class="relative">
     				<input name="message"  id="textarea" type="text" placeholder="message .." class="w-full pr-16 px-5 input input-primary input-bordered">
@@ -135,8 +173,6 @@ defmodule StadlerNoWeb.PageLive do
     			</div>
     		</form>
     	</div>
-    </div>
-    </div>
 
 
 

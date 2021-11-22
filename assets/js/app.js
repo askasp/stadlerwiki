@@ -33,6 +33,33 @@ cytoscape.use( cola );
 
 
 let Hooks = {}
+
+function ScrollMe(){
+  	console.log("im called")
+    var doc = document.querySelector("#chatPage");
+    console.log(doc)
+    doc.scrollTop = doc.scrollHeight;
+}
+Hooks.Scroll = {
+    mounted(){
+    this.handleEvent("new_message", ({val}) => ScrollMe());
+    }
+};
+Hooks.SendMsg= {
+  mounted() {
+    document.getElementById("textarea").addEventListener("keypress", (e) => {
+            if (e.which === 13  && !event.shiftKey) {
+                e.preventDefault()
+                this.pushEvent("send_message", document.getElementById("textarea").value)
+                document.getElementById("textarea").value=""
+                 }
+    }
+    )
+
+  }
+}
+
+
 Hooks.NodeChart= {
   mounted() {
     this.handleEvent("pushEventToJs", (payload) => {
