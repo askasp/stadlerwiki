@@ -57,25 +57,6 @@ defmodule StadlerNoWeb.PageLive do
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
   	</svg>
 		</button>
-  <form class="mt-5 mb-0" phx-change="search_wiki">
-    <div class="flex-1 lg:flex-none">
-      <div class="form-control">
-        <div class="w-full">
-          <input name="search_string" autocomplete="off" type=
-          "text" placeholder="Search wiki" class=
-          "mb-0 w-full input input-primary bg-gray-100 text-black">
-          <ul tabindex="0" class=
-          "p-0 px-5 relative shadow-sm menu dropdown-content bg-gray-100 rounded-box w-3/4"
-          style="margin-top: 0">
-            <%= for res <- @search_result do %><%= live_patch to: "/post/" <> Integer.to_string(res.id) do %>
-            <div style="color: black">
-              <%= res.title %>
-            </div><%end %><%end %>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </form>
 
 <div class="tabs tabs-boxed mt-0 ">
   <button phx-click="set_tab" phx-value-tab="toc" class={is_active_tab(@tab, "toc")}>ToC </button>
