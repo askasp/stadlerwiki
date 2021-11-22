@@ -14,23 +14,24 @@ defmodule StadlerNoWeb.PageLive do
   <form class="absolute top-5 right-20 w-3/4 md:w-full md:static" phx-change="search_wiki" phx-submit="search_wiki">
     <div class="flex-1 lg:flex-none">
       <div class="form-control">
-        <div class="w-full">
           <input name="search_string" autocomplete="off" type=
           "text" placeholder="Search wiki" class=
           "mb-0 w-full input h-10 bg-base-100 ">
-          <ul tabindex="0" class=
-          "p-0 px-5 relative shadow-sm menu dropdown-content bg-base-100 rounded-box w-full"
-          style="margin-top: 0">
-            <%= for  res <- @search_result do %><%= live_patch res.title, to: "/post/" <> Integer.to_string(res.id) %>
-
+          <%= if length(@search_result) > 0 do %>
+          <ul tabindex="0" class="px-5 relative  shadow-sm menu dropdown-content bg-base-100 rounded-box w-full">
+            <%= for  res <- @search_result do %><%= live_patch to: "/post/" <> Integer.to_string(res.id)  do%>
+            <div class="p-2"> <%= res.title %> </div>
+            <%end %>
             <%end %>
           </ul>
+          <% else %>
+          <div class="mb-5"> </div>
+          <% end %>
         </div>
-      </div>
     </div>
   </form>
 
-    <label for="my-drawer-2" class="mb-10 my-0 drawer-button lg:hidden">
+    <label for="my-drawer-2" class="mb-12 my-0 drawer-button lg:hidden">
 <button phx-click="toggledrawer" class="absolute top-5 right-5 lg:hidden">
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>               
@@ -58,14 +59,14 @@ defmodule StadlerNoWeb.PageLive do
   	</svg>
 		</button>
 
-<div class="tabs tabs-boxed mt-0 ">
+<div class="tabs tabs-boxed mt-5 ">
   <button phx-click="set_tab" phx-value-tab="toc" class={is_active_tab(@tab, "toc")}>ToC </button>
   <button phx-click="set_tab" phx-value-tab="chat"class={is_active_tab(@tab, "chat")}>LiveChat</button>
   <button phx-click="set_tab" phx-value-tab="chart" class={is_active_tab(@tab, "chart")} >Chart </button>
 </div>
 
 <%= case @tab do %>
-	<%= "chart" -> %> <div id="cy"  class="w-full h-[70vh]"  phx-hook="NodeChart">  </div>
+	<%= "chart" -> %> <div id="cy"  class="w-full md:w-[50vw] md:absolute md:left-0  h-[70vh]"  phx-hook="NodeChart">  </div>
 	<%= _ ->%> <%= chat(%{messages: @messages, reader_count: @reader_count}) %>
 	<% end %>
 
@@ -181,7 +182,7 @@ defmodule StadlerNoWeb.PageLive do
   def chat(assigns) do
     ~H"""
     <h2 style="margin-top: 1em" > People on page : <%= @reader_count %> </h2>
-  <div id="chatPage" phx-hook="SendMsg" class="h-[35vh] md:h-[60vh] py-5 overflow-y-auto">
+  <div id="chatPage" phx-hook="SendMsg" class="h-[35vh] md:h-[70vh] py-5 overflow-y-auto">
 			<div class="container mx-auto " phx-hook="Scroll" id="messages">
       	<div class="mt-2 mb-4 ">
       		<%= for m <- @messages do %>
