@@ -9,7 +9,6 @@ defmodule StadlerNo.Wiki.Tag do
                  StadlerNo.Wiki.Tag,
                  join_through: StadlerNo.Wiki.PostTag
 
-
     timestamps()
   end
 
@@ -43,12 +42,10 @@ defmodule StadlerNo.Wiki.PostTag do
   end
 end
 
-
-
 defmodule StadlerNo.Wiki.TagAdmin do
   def form_fields(_) do
     [
-      name: nil,
+      name: nil
     ]
   end
-  end
+end

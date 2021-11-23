@@ -33,7 +33,8 @@ config :stadler_no, StadlerNoWeb.Endpoint,
       "--watch",
       cd: Path.expand("../assets", __DIR__)
     ]
-]
+  ]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

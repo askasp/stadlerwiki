@@ -16,7 +16,6 @@ defmodule StadlerNo.Wiki.Post do
                  join_through: StadlerNo.Wiki.PostRelationship,
                  join_keys: [relation_id: :id, post_id: :id]
 
-
     many_to_many :tags,
                  StadlerNo.Wiki.Tag,
                  join_through: StadlerNo.Wiki.PostTag
@@ -40,7 +39,6 @@ defmodule StadlerNo.Wiki.PostRelationship do
     field :post_id, :id
     field :relation_id, :id
 
-
     timestamps()
   end
 
@@ -58,13 +56,11 @@ defmodule StadlerNo.Wiki.PostRelationship do
   end
 end
 
-
-
 defmodule StadlerNo.Wiki.PostAdmin do
   def form_fields(_) do
     [
       title: nil,
-      body: %{type: :textarea, rows: 50},
+      body: %{type: :textarea, rows: 50}
     ]
   end
 end

@@ -1,7 +1,6 @@
 defmodule StadlerNoWeb.Router do
   use StadlerNoWeb, :router
 
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -11,7 +10,7 @@ defmodule StadlerNoWeb.Router do
     plug :put_secure_browser_headers
   end
 
-	use Kaffy.Routes, scope: "/admin", pipe_through: []
+  use Kaffy.Routes, scope: "/admin", pipe_through: []
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -20,8 +19,8 @@ defmodule StadlerNoWeb.Router do
   scope "/", StadlerNoWeb do
     pipe_through :browser
 
-    live "/", PageLive , :index
-
+    live "/", PageLive, :index
+    live "/post/:id", PageLive, :index
   end
 
   # Other scopes may use custom stacks.

@@ -22,12 +22,11 @@ defmodule StadlerNoWeb.Endpoint do
     gzip: false,
     only: ~w(assets fonts images favicon.ico robots.txt)
 
-
-	plug Plug.Static,
-  at: "/kaffy", # or "/path/to/your/static/kaffy"
-  from: :kaffy,
-  gzip: false
-
+  plug Plug.Static,
+    # or "/path/to/your/static/kaffy"
+    at: "/kaffy",
+    from: :kaffy,
+    gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

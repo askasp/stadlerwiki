@@ -140,11 +140,7 @@ var cy = cytoscape({
 
 
 cy.on('tap', 'node', function(){
-  try { // your browser may block popups
-    window.open( this.data('href') );
-  } catch(e){ // fall back on url change
     window.location.href = this.data('href');
-  }
 });
 
 

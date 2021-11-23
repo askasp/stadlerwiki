@@ -11,9 +11,6 @@ defmodule StadlerNo.Repo.Migrations.CreatePostTags do
     create(index(:posts_tags, [:tag_id]))
     create(index(:posts_tags, [:post_id]))
 
-    create(
-      unique_index(:posts_tags, [:post_id, :tag_id], name: :post_id_tag_id_unique_index)
-    )
-
+    create(unique_index(:posts_tags, [:post_id, :tag_id], name: :post_id_tag_id_unique_index))
   end
 end
